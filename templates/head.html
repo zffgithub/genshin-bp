@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head lang="ko">
+    {% block meta %}
+    <!--====================== META ======================-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="subject" content="BP系统">
+    <meta name="title" content="BP系统">
+    <meta name="author" content="BP系统">
+    <meta name="description" content="BP系统">
+    <meta name="keywords" content="BP系统">
+    <meta name="copyright" content="BP系统">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BP系统">
+    <meta property="og:description" content="BP系统">
+    <meta name="naver-site-verification" content="0b36fafe29ec5245c05572095119451dab1d89e6"/>
+    <meta http-equiv="pragram" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <!--==================================================-->
+    {% endblock meta %}
+    {% block headjs %}
+    <!--==================== CSS & JS ====================-->
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{% static 'js/common.js' %}"></script>
+    <!--==================================================-->
+    {% endblock headjs %}
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+{% block body %}{% endblock body %}
+</html>

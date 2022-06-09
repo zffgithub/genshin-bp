@@ -1,0 +1,37 @@
+{% extends "head.html" %}
+{% load static %}
+{% block title %}{{draft.match_name}} 入口 | 选择对战方{% endblock title %}
+{% block body %}
+<body>
+    <div id="home_wrap" class="flex">
+        {% include "logo.html" %}
+        <div id="entry_wrap">
+        <form method="POST" action="" autocomplete="off">
+            {% csrf_token %}
+            {% if draft.mode != "999" %}
+            <div id="tc_wrap">
+                <input id="blue_team" type="radio" name="team" value="blue" {% if team == 'blue' %}checked='checked'{% endif %}>
+                <label for="blue_team" class="inline_block blue bold">{{draft.blue_team_name}}</label>
+                <input id="red_team" type="radio" name="team" value="red" {% if team == 'red' %}checked='checked'{% endif %}>
+                <label for="red_team" class="inline_block red bold">{{draft.red_team_name}}</label>
+                <input id="spectator" type="radio" name="team" value="none" {% if team == 'spectator' %}checked='checked'{% endif %}>
+                <label for="spectator" class="block black bold">裁判/观战(请裁判先开始游戏之后再分享链接给观众)</label>
+            </div>
+            {% endif %}
+            <div id="password_wrap" class="after">
+                <label for="pw_input" class="inline_block f_left bold">密码</label>
+                <input id="pw_input" name="password" class="inline_block f_left" type="password" autofocus='true'>
+            </div>
+            <input id="entry_btn" class="bold" type="submit" value="进入">
+        </form>
+        </div>
+    </div>
+    {% if messages %}
+    <script type="text/javascript">
+    {% for message in messages%}
+    alert('{{message}}')
+    {% endfor %}
+    </script>
+    {% endif %}
+</body>
+{% endblock body %}

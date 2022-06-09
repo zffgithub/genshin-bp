@@ -1,0 +1,57 @@
+{% extends "head.html" %}
+{% load static %}
+{% block title %}房间链接{% endblock title %}
+{% block body %}
+<body>
+    <div id="home_wrap" class="flex">
+        {% include "logo.html" %}
+        <div id="result_wrap">
+            <div class="container after">
+                <div class="link f_left">
+                    <a class="bold" target="_blank" href="{{draft.entry_url}}">
+                        <input id="draft_url" class="t_center" value="" readonly>
+                    </a>
+                </div>
+                <div class="copy f_left">
+                    <img src="{% static 'img/copy-32.png' %}" width='50px' onclick="CopyDraftUrl()">
+                </div>
+            </div>
+        </div>
+        <div class="link f_right">
+            <a href="/">返回主页</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+    document.getElementById("draft_url").value = window.origin+"{{draft.entry_url}}";
+    // 复制地址
+    function CopyDraftUrl(){
+        var url = document.getElementById("draft_url");
+        url.select();
+        document.execCommand("copy");
+        AlertStr("复制完成")
+    }
+    // 弹出通知窗口
+    function AlertStr(msg){
+        var parentNode = document.getElementById('home_wrap');
+        var html = '<div class="alert_wrap bold">' + msg + '</div>'
+        parentNode.innerHTML = parentNode.innerHTML + html;
+        document.getElementById("draft_url").value = window.origin+"{{draft.entry_url}}";
+        clearTimeout(disappearFunc);
+        clearTimeout(removeFunc);
+        var el = document.getElementsByClassName('alert_wrap');
+        var disappearFunc = setTimeout(function(){
+            for(var i=0, len=el.length; i<len; i++){
+                el[i].classList.add('disappear');
+            };
+        }, 400)
+        var removeFunc = setTimeout(function(){
+            for(var i=0, len=el.length; i<len; i++){
+                el[i].parentNode.removeChild(el[i]);
+            }
+        }, 1400)
+        disappearFunc;
+        removeFunc;
+    }
+    </script>
+</body>
+{% endblock body %}

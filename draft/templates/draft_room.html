@@ -1,0 +1,377 @@
+{% extends "head.html" %}
+{% load static %}
+{% load champion_tag %}
+{% block title %}{{draft.match_name}} | 房间{% endblock title %}
+{% block body %}
+<body>
+    <div id="app">
+        {% include "logo.html" %}
+        <div id="timer_wrap" class="t_center bold" v-show="order != 16" :class="[order == 17 ? 'end' : '']">
+            <div class="turn blue">
+                <p>{{draft.blue_team_name}} TEAM</p><div class="bar"></div>
+            </div>
+            <div id="timer">[[timer|timerDp]]</div>
+            <div class="turn red">
+                <p>{{draft.red_team_name}} TEAM</p><div class="bar"></div>
+            </div>                    
+        </div>
+        <div id="room_wrap" class="after" v-show="order != 16" :class="[order == 17 ? 'end' : '']">
+            <div id="team_wrap">
+                <div class="team blue">
+                    <div class="ban">
+                        <div class="container od_0">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_2">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_8">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_10">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                    </div>
+                    <div class="pick">
+                        <div class="container od_4">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.blue_player_name '0' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_6">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.blue_player_name '1' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_13">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.blue_player_name '2' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_15">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.blue_player_name '3' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="draft_wrap" v-show="order < 16">
+                <div id="champion_filter">
+                    <input id="cpf-all" type="radio" name="lane" @change="championsRefresh()" value="">
+                    <label for="cpf-all">全部</label>
+                    <input id="cpf-fire" type="radio" name="lane" @change="championsRefresh()" value="fire">
+                    <label for="cpf-fire">火</label>
+                    <input id="cpf-ice" type="radio" name="lane" @change="championsRefresh()" value="ice">
+                    <label for="cpf-ice">冰</label>
+                    <input id="cpf-thunder" type="radio" name="lane" @change="championsRefresh()" value="thunder">
+                    <label for="cpf-thunder">雷</label>
+                    <input id="cpf-water" type="radio" name="lane" @change="championsRefresh()" value="water">
+                    <label for="cpf-water">水</label>
+                    <input id="cpf-grass" type="radio" name="lane" @change="championsRefresh()" value="grass">
+                    <label for="cpf-grass">草</label>
+                    <input id="cpf-wind" type="radio" name="lane" @change="championsRefresh()" value="wind">
+                    <label for="cpf-wind">风</label>
+                    <input id="cpf-rock" type="radio" name="lane" @change="championsRefresh()" value="rock">
+                    <label for="cpf-rock">岩</label>
+                    <input id="cpf-search" type="text" @keyup="championsRefresh()" name="name">
+                    <label for="cpf-search" class="f_right">搜索</label>
+                </div>
+                <div id="champion_list" class="after bg_black">
+                    <div v-for="champion in championsList" class="champion f_left">
+                        <i @click="draftSelect(champion.no)" :style="champion.no|cpStyle" class="block sp" :class="champion.no|cpClassName" :disabled="champion.disabled">
+                            <div class="sp-name t_center">
+                                <p class="inline-block">[[champion.name]]</p>
+                            </div>
+                        </i>
+                    </div>
+                </div>
+                <div id="champion_select" {% if draft.mode != "999" %}v-if="draft.team == '{{request.session.team}}'"{% endif %} :class="order|selectClassName" @click="draftChoice()">
+                    <p class="t_center">[[order|selectHtml]]</p>
+                </div>
+            </div>
+            <div id="team_wrap">
+                <div class="team red">
+                    <div class="ban">
+                        <div class="container od_1">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_3">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_9">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_11">
+                            <div class="sp"></div>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                    </div>
+                    <div class="pick">
+                        <div class="container od_5">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.red_player_name '0' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_7">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.red_player_name '1' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_12">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.red_player_name '2' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                        <div class="container od_14">
+                            <div class="sp"></div>
+                            <p class="name">{% player_name draft.red_player_name '3' %}</p>
+                            <p class="order"></p>
+                            <span class="bar"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="line_wrap" class="{{request.session.team}}" v-show="order == 16">
+            <p>选择</p>
+            {% if draft.mode == "1" %}
+            <!-- <div>
+                <div class="blue lane">
+                    <div class="container od_4">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b0-{{i}}" name="0" value={{i}} type="radio">
+                            <label for="b0-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '0' %}</p>
+                    </div>
+                    <div class="container od_6">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b1-{{i}}" name="1" value={{i}} type="radio">
+                            <label for="b1-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '1' %}</p>
+                    </div>
+                    <div class="container od_13">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b2-{{i}}" name="2" value={{i}} type="radio">
+                            <label for="b2-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '2' %}</p>
+                    </div>
+                    <div class="container od_15">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b3-{{i}}" name="3" value={{i}} type="radio">
+                            <label for="b3-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '3' %}</p>
+                    </div>
+                </div>
+            </div> -->
+            <!-- <div>
+                <div class="red lane">
+                    <div class="container od_5">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r0-{{i}}" name="4" value={{i}} type="radio">
+                            <label for="r0-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '0' %}</p>
+                    </div>
+                    <div class="container od_7">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r1-{{i}}" name="5" value={{i}} type="radio">
+                            <label for="r1-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '1' %}</p>
+                    </div>
+                    <div class="container od_12">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r2-{{i}}" name="6" value={{i}} type="radio">
+                            <label for="r2-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '2' %}</p>
+                    </div>
+                    <div class="container od_14">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r3-{{i}}" name="7" value={{i}} type="radio">
+                            <label for="r3-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '3' %}</p>
+                    </div>
+                </div>
+                <div @click="laneChoiceDoneSingle()" id="lc_done">完成选择</div>
+            </div> -->
+            {% elif request.session.team == 'blue'%}
+            <div v-show="!laneBlue">
+                <div class="{{request.session.team}} lane">
+                    <div class="container od_4">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b0-{{i}}" name="b0" value={{i}} type="radio">
+                            <label for="b0-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '0' %}</p>
+                    </div>
+                    <div class="container od_6">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b1-{{i}}" name="b1" value={{i}} type="radio">
+                            <label for="b1-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '1' %}</p>
+                    </div>
+                    <div class="container od_13">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b2-{{i}}" name="b2" value={{i}} type="radio">
+                            <label for="b2-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '2' %}</p>
+                    </div>
+                    <div class="container od_15">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="b3-{{i}}" name="b3" value={{i}} type="radio">
+                            <label for="b3-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.blue_player_name '3' %}</p>
+                    </div>
+                </div>
+                <div @click="laneChoiceDone('blue')" id="lc_done">完成选择</div>
+            </div>
+            <div v-if="laneBlue" class="lane_wait">对手选择中...</div>
+            {% elif request.session.team == 'red' %}
+            <div v-show="!laneRed">
+                <div class="{{request.session.team}} lane">
+                    <div class="container od_5">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r0-{{i}}" name="r0" value={{i}} type="radio">
+                            <label for="r0-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '0' %}</p>
+                    </div>
+                    <div class="container od_7">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r1-{{i}}" name="r1" value={{i}} type="radio">
+                            <label for="r1-{{i}}" class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '1' %}</p>
+                    </div>
+                    <div class="container od_12">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r2-{{i}}" name="r2" value={{i}} type="radio">
+                            <label for="r2-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '2' %}</p>
+                    </div>
+                    <div class="container od_14">
+                        <div class="sp"></div>
+                        <div class="laneicon_wrap">
+                            {% for i in '0123'|make_list %}
+                            <input id="r3-{{i}}" name="r3" value={{i}} type="radio">
+                            <label for="r3-{{i}}"class="icon-{{i}}"></label>
+                            {% endfor %}
+                        </div>
+                        <p class="name">{% player_name draft.red_player_name '3' %}</p>
+                    </div>
+                </div>
+                <div @click="laneChoiceDone('red')" id="lc_done">完成选择</div>
+            </div>
+            <div v-if="laneRed" class="lane_wait">对方选择中...</div>
+            {% else %}
+            <div id="spectator_wait" class="{{request.session.team}} team">
+                请等待...
+            </div>
+            {% endif  %}
+        </div>
+        <div id="modal" v-if="!start">
+            <div id="start_wrap"{% if request.session.master == draft.id %} @click="draftStart">开始{% else %}>等待{% endif %}</div>
+        </div>
+    </div>
+    <script>
+    const roomId = "{{ draft.id|escapejs }}";
+    const roomCode = "{{ draft.code|escapejs }}";
+    const team = "{{request.session.team}}";
+    const master = "{{request.session.master}}";
+    </script>
+    {% if draft.mode != "999" %}
+    <script>
+    const draftSocket = new WebSocket(
+        'ws://' + window.location.hostname + 
+        ':82/ws/draft/' + roomId + '/'
+    );
+    </script>
+        {% if draft.mode == "1" %}
+            <script type="text/javascript" src="{% static 'js/draft-multi-eight.js' %}"></script>
+        {% else %}
+            <script type="text/javascript" src="{% static 'js/draft-multi.js' %}"></script>
+        {% endif %}
+    <script type="text/javascript" src="{% static 'js/websocket.js' %}"></script>
+    {% else %}
+    <script type="text/javascript" src="{% static 'js/draft-single.js' %}"></script>
+    {% endif %}
+</body>
+{% endblock body %}
